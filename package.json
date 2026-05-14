@@ -1,7 +1,7 @@
 {
   "name": "grammarquest",
   "version": "5.0.0",
-  "description": "English Grammar Quiz — Wren & Martin based. 500+ questions, 5 themes, Google Sheets powered, power-ups, leaderboard, analytics.",
+  "description": "English Grammar Quiz, 500+ questions, 5 themes, Google Sheets powered, power-ups, leaderboard, analytics.",
   "author": {
     "name": "GrammarQuest",
     "email": ""
