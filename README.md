@@ -1,6 +1,6 @@
 # 📐 GrammarQuest v5.0
 
-> **English Grammar Quiz — Wren & Martin based**
+> **English Grammar Quiz**
 > 500+ questions · 5 Themes · Google Sheets powered · Production Ready
 
 ![Version](https://img.shields.io/badge/version-5.0.0-blue)
@@ -14,7 +14,7 @@
 
 | Feature | Details |
 |---------|---------|
-| 📚 **500+ Questions** | Wren & Martin based — Parts of Speech, Tenses, Articles, Modals, Conditionals, Idioms & more |
+| 📚 **500+ Questions** | Parts of Speech, Tenses, Articles, Modals, Conditionals, Idioms & more |
 | 🎨 **5 Themes** | Solar Paper · Cosmic Dark · Neon Jungle · Sakura · Brutalist |
 | 📊 **Google Sheets DB** | Questions live in your Sheet — update Sheet, quiz auto-updates |
 | ⚡ **Power-Ups** | 50/50, +15s Timer, Hint |
