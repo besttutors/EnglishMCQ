@@ -2118,6 +2118,122 @@ const FB=[
    BOOT
 ═══════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', init);
-</script>
+// ═══════════════════════════════════════════════════════
+// MISSING FUNCTIONS — Paste karo </script> se PEHLE
+// ═══════════════════════════════════════════════════════
+
+function openSettings() {
+  // Guard: questions load nahi hue toh warning
+  if (!ALL_QS.length) {
+    toast('⚠️ Questions load nahi hue — please refresh!');
+    return;
+  }
+
+  // Category dropdown populate karo
+  const cats = [...new Set(ALL_QS.map(q => q.c).filter(Boolean))].sort();
+  const sel = document.getElementById('setCat');
+  sel.innerHTML = '<option value="all">All Topics</option>';
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c;
+    o.textContent = c;
+    sel.appendChild(o);
+  });
+
+  // Settings modal open karo
+  document.getElementById('settingsOverlay').classList.add('show');
+}
+
+function startQuizFromSettings() {
+  // Settings se values read karo
+  const qCount  = parseInt(document.getElementById('setQCount').value) || 20;
+  const cat     = document.getElementById('setCat').value;
+  const diff    = document.getElementById('setDiff').value;
+  const timerV  = parseInt(document.getElementById('setTimer').value);
+  const negMark = document.getElementById('negToggle').classList.contains('on');
+  const hintFree= document.getElementById('hintFreeToggle').classList.contains('on');
+
+  // Settings apply karo global variables mein
+  window.QPC    = qCount;
+  window.TPQ    = timerV === 0 ? 999 : timerV;   // 0 = timer off
+  window.NEG    = negMark;
+  window.HINTFREE = hintFree;
+  window.FILTER_CAT  = cat;
+  window.FILTER_DIFF = diff;
+
+  // Modal band karo
+  document.getElementById('settingsOverlay').classList.remove('show');
+
+  // Quiz shuru karo (custom settings ke saath)
+  startQuizCustom();
+}
+
+function startQuizCustom() {
+  if (!ALL_QS.length) { toast('⚠️ Questions load nahi hue!'); return; }
+  S.go();
+
+  const raw = document.getElementById('nameInput')?.value.trim() || '';
+  playerName = raw.replace(/[<>&"'\\]/g, '').substring(0, 20) || 'Scholar';
+
+  // Filter questions
+  let pool = ALL_QS.filter(q => {
+    const catOk  = (window.FILTER_CAT  === 'all') || (q.c === window.FILTER_CAT);
+    const diffOk = (window.FILTER_DIFF === 'all') || ((q.diff || 'Medium') === window.FILTER_DIFF);
+    return catOk && diffOk;
+  });
+
+  if (!pool.length) {
+    toast('⚠️ Is filter mein koi question nahi! All topics select karo.');
+    document.getElementById('settingsOverlay').classList.add('show');
+    return;
+  }
+
+  // Sort by difficulty: Easy → Medium → Hard
+  const easy = pool.filter(q => (q.diff || 'Medium').toLowerCase() === 'easy');
+  const med  = pool.filter(q => (q.diff || 'Medium').toLowerCase() === 'medium');
+  const hard = pool.filter(q => (q.diff || 'Medium').toLowerCase() === 'hard');
+  const sorted = [...shuffle(easy), ...shuffle(med), ...shuffle(hard)];
+
+  const count = window.QPC || 20;
+  Qs = sorted.slice(0, count);
+
+  // Reset state
+  idx = 0; score = 0; xp = 0; streak = 0; maxStreak = 0;
+  correct = 0; wrong = 0; skipped = 0; isPaused = false;
+  answered = new Array(Qs.length).fill(false);
+  userAns  = new Array(Qs.length).fill(null);
+  qTimes   = new Array(Qs.length).fill(0);
+  pu50 = 1; puTm = 1; puHt = 1; topicStats = {}; navDir = 'first';
+
+  // Timer off = study mode
+  if ((window.TPQ || 30) >= 999) {
+    document.getElementById('studyBadge').classList.add('show');
+    document.getElementById('tmrNum').textContent = '∞';
+  } else {
+    document.getElementById('studyBadge').classList.remove('show');
+  }
+
+  document.body.classList.add('in-quiz');
+  sc('scQuiz');
+  buildNavDots();
+  loadQ();
+}
+
+function toggleNeg() {
+  const el = document.getElementById('negToggle');
+  const on = el.classList.toggle('on');
+  el.setAttribute('aria-checked', on);
+}
+
+function toggleHintFree() {
+  const el = document.getElementById('hintFreeToggle');
+  const on = el.classList.toggle('on');
+  el.setAttribute('aria-checked', on);
+}
+
+// Close settings modal on outside click
+document.getElementById('settingsOverlay')?.addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('show');
+});</script>
 </body>
 </html>
