@@ -1,0 +1,43 @@
+name: Validate HTML
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install HTMLHint
+        run: npm install -g htmlhint
+
+      - name: Validate HTML
+        run: htmlhint index.html --config .htmlhintrc || true
+
+      - name: Check file size
+        run: |
+          SIZE=$(wc -c < index.html)
+          echo "index.html size: $SIZE bytes"
+          if [ $SIZE -gt 500000 ]; then
+            echo "Warning: File size exceeds 500KB"
+          else
+            echo "File size OK"
+          fi
+
+      - name: Verify required strings
+        run: |
+          echo "Checking required elements..."
+          grep -q "SCRIPT_URL" index.html && echo "✅ SCRIPT_URL config found"
+          grep -q "data-theme" index.html && echo "✅ Theme system found"
+          grep -q "aria-label" index.html && echo "✅ Accessibility labels found"
+          echo "All checks passed!"

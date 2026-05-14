@@ -1,0 +1,57 @@
+{
+  "name": "grammarquest",
+  "version": "5.0.0",
+  "description": "English Grammar Quiz — Wren & Martin based. 500+ questions, 5 themes, Google Sheets powered, power-ups, leaderboard, analytics.",
+  "author": {
+    "name": "GrammarQuest",
+    "email": ""
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/YOUR_USERNAME/grammarquest",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/grammarquest.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/grammarquest/issues"
+  },
+  "keywords": [
+    "grammar",
+    "quiz",
+    "english",
+    "wren-martin",
+    "education",
+    "google-sheets",
+    "apps-script",
+    "hindi",
+    "interactive",
+    "leaderboard"
+  ],
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server --open=index.html",
+    "lint": "npx htmlhint index.html",
+    "validate": "npx html-validate index.html"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.0",
+    "htmlhint": "^1.1.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "index.html",
+    "Code.gs",
+    "README.md",
+    "LICENSE",
+    ".github/"
+  ],
+  "config": {
+    "google_sheets_url": "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE",
+    "questions_per_quiz": 20,
+    "timer_seconds": 30
+  }
+}
