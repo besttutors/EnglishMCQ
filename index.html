@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="SK Gupta English Classes — Advanced English Grammar MCQ Quiz. 5000+ questions, AI-powered, competitive mode.">
+<meta name="description" content="SK Gupta English Classes — Advanced English Grammar MCQ Quiz. 500+ questions, AI-powered, competitive mode.">
 <meta name="theme-color" content="#6c47ff">
 <title>SK Gupta English Classes — Grammar MCQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1227,7 +1227,7 @@ body.in-quiz .theme-switcher:hover { opacity:.9;pointer-events:all; }
 }
 @media(max-width:380px){
   .act-back span{display:none;}
-  .act-skip{display:none;}
+  .act-skip{font-size:.7rem;padding:11px 8px;}
 }
 
 /* ─── PRINT ─── */
@@ -1425,7 +1425,10 @@ body.in-quiz .theme-switcher:hover { opacity:.9;pointer-events:all; }
         English Grammar — Advanced MCQ
       </div>
       <h1 class="hero-h">Master English<br><span class="grad">Grammar.</span></h1>
-      <p class="hero-sub">Practice Indian English grammar with fresh questions every time. <strong>Created by Professor Santosh Kumar Gupta</strong> Take tests, improve your skills, and check your results instantly!</p>
+   <p class="hero-sub">
+Practice Indian English grammar with 5000+ carefully designed questions covering all topics. 
+Created by Professor Santosh Kumar Gupta — every test brings fresh questions and instant results!
+</p>
       <div id="srcStatus" class="src-status warn">⏳ &nbsp;Checking question bank…</div>
 
       <div class="stats-grid">
@@ -1464,6 +1467,7 @@ body.in-quiz .theme-switcher:hover { opacity:.9;pointer-events:all; }
         </svg>
         <span class="t-lbl" id="tNum">30</span>
       </div>
+      <button class="ctrl-btn" onclick="goHome()" aria-label="Home" title="Home">🏠</button>
       <button class="ctrl-btn" onclick="pauseQuiz()" aria-label="Pause">⏸</button>
       <button class="ctrl-btn" id="flagBtn" onclick="toggleFlag()" aria-label="Flag question">🚩</button>
     </div>
@@ -1522,6 +1526,7 @@ body.in-quiz .theme-switcher:hover { opacity:.9;pointer-events:all; }
     <div class="glass res-hero">
       <div class="glass-top-stripe"></div>
       <div class="res-emoji-ring" id="resEmoji">🏆</div>
+      <div class="res-player-name" id="resPlayerName" style="font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:600;color:var(--ink3);margin-bottom:4px;letter-spacing:.3px;"></div>
       <div class="res-title" id="resTitle">Outstanding!</div>
       <div class="res-sub" id="resSub">Grammar Champion!</div>
       <div class="xp-pill" id="xpPill">⭐ +0 XP</div>
@@ -1557,6 +1562,7 @@ body.in-quiz .theme-switcher:hover { opacity:.9;pointer-events:all; }
 
     <div class="res-btns">
       <button class="btn-primary" onclick="startQuiz()">↺ Play Again</button>
+      <button class="btn-ghost" onclick="goHome()">🏠 Home</button>
       <button class="btn-ghost" onclick="toggleReview()" id="revBtn">📋 Review All</button>
       <button class="btn-ghost" onclick="shareResult()">📤 Share</button>
       <button class="btn-ghost" onclick="window.print()">🖨️ Print</button>
@@ -1790,6 +1796,9 @@ function startQuiz(){
   S.go();
   const raw=document.getElementById('nameInput')?.value.trim()||'';
   playerName=raw.replace(/[<>&"'\\]/g,'').substring(0,20)||'Scholar';
+  // restore name field so Play Again keeps the name
+  if(document.getElementById('nameInput') && !document.getElementById('nameInput').value.trim())
+    document.getElementById('nameInput').value = playerName !== 'Scholar' ? playerName : '';
 
   let pool=ALL_QS.filter(q=>{
     const catOk=CFG.cat==='all'||q.c===CFG.cat;
@@ -1806,7 +1815,7 @@ function startQuiz(){
   idx=0;score=0;xp=0;streak=0;maxStreak=0;
   correct=0;wrong=0;skipped=0;isPaused=false;
   answered=new Array(Qs.length).fill(false);
-  userAns=new Array(Qs.length).fill(null);
+  userAns=new Array(Qs.length).fill(-1);
   qTimes=new Array(Qs.length).fill(0);
   flagged=new Array(Qs.length).fill(false);
   pu50=1;puTm=1;puHt=1;topicStats={};navDir='first';
@@ -1899,6 +1908,7 @@ function loadQ(){
     btn.className='opt'; btn.dataset.i=i;
     btn.setAttribute('role','radio'); btn.setAttribute('aria-checked','false');
     btn.setAttribute('aria-label',`Option ${LBL[i]}: ${opt}`);
+    btn.setAttribute('tabindex','0');
     const key=document.createElement('span');key.className='opt-key';key.setAttribute('aria-hidden','true');key.textContent=LBL[i];
     const txt=document.createElement('span');txt.className='opt-txt';txt.textContent=opt;
     btn.appendChild(key);btn.appendChild(txt);
@@ -1941,8 +1951,33 @@ function startTimer(){
   },1000);
 }
 
-function pauseQuiz(){if(answered[idx]||CFG.tpq===0)return;isPaused=true;document.getElementById('pauseOv').classList.add('show');S.tk();}
-function resumeQuiz(){isPaused=false;document.getElementById('pauseOv').classList.remove('show');document.querySelector('.opt:not(:disabled)')?.focus();}
+function pauseQuiz(){
+  if(answered[idx]||CFG.tpq===0)return;
+  isPaused=true;
+  clearInterval(tmrInt); tmrInt=null;
+  document.getElementById('pauseOv').classList.add('show');
+  S.tk();
+}
+function goHome(){
+  const fromQuiz = document.getElementById('scQuiz').classList.contains('active');
+  if(fromQuiz){
+    const ok = confirm('Quiz chhod ke Home jaana chahte ho?\nProgress save nahi hogi.');
+    if(!ok) return;
+    clearInterval(tmrInt); tmrInt=null;
+    isPaused=false;
+    document.body.classList.remove('in-quiz');
+    document.getElementById('pauseOv').classList.remove('show');
+    document.getElementById('confirmOv').classList.remove('show');
+  }
+  showScreen('scWelcome');
+  renderLB('lbHome');
+}
+function resumeQuiz(){
+  isPaused=false;
+  document.getElementById('pauseOv').classList.remove('show');
+  if(CFG.tpq>0 && !answered[idx]) startTimer();
+  document.querySelector('.opt:not(:disabled)')?.focus();
+}
 
 function recordTime(){qTimes[idx]=Math.round((Date.now()-qStartTime)/1000);}
 function autoSkip(){if(!answered[idx]){recordTime();answered[idx]=true;userAns[idx]=-1;skipped++;streak=0;updateStreak();revealOk();}}
@@ -1999,7 +2034,7 @@ function restoreState(){
 }
 function lockPUs(){['pu50','puTm','puHt'].forEach(id=>document.getElementById(id).disabled=true);}
 function updateStreak(){
-  document.getElementById('streakNum').textContent='🔥 '+streak;
+  document.getElementById('streakNum').textContent=streak;
   document.getElementById('streakChip').className='hud-pill'+(streak>=3?' streak-hot':'');
 }
 
@@ -2068,6 +2103,7 @@ async function showResults(){
   document.getElementById('rNg').textContent=wrong;
   document.getElementById('rSk').textContent=skipped;
   document.getElementById('xpPill').textContent='⭐ +'+xp+' XP';
+  document.getElementById('resPlayerName').textContent='👤 '+playerName;
 
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
     const arc=document.getElementById('ringArc');
@@ -2148,7 +2184,8 @@ function toggleReview(){
 }
 function shareResult(){
   const pct=Math.round(score/(Qs.length*2)*100);
-  const text=`🎯 SK Gupta English Classes — Grammar MCQ\n📝 ${playerName}\n✅ Score: ${score}/${Qs.length*2} (${pct}%)\n🔥 Best Streak: ${maxStreak}\n⭐ XP Earned: ${xp}\n\nPlay at: ${location.href}`;
+  const shareUrl = location.protocol==='file:' ? 'SK Gupta English Classes' : location.href;
+  const text=`🎯 SK Gupta English Classes — Grammar MCQ\n👤 ${playerName}\n✅ Score: ${score}/${Qs.length*2} (${pct}%)\n🔥 Best Streak: ${maxStreak}\n⭐ XP Earned: ${xp}\n\n${location.protocol!=='file:' ? 'Play at: '+shareUrl : 'Practice karo aur Grammar improve karo!'}`;
   if(navigator.share){navigator.share({title:'SK Gupta Grammar MCQ',text}).catch(()=>{});}
   else{navigator.clipboard.writeText(text).then(()=>toast('📋 Result copied!')).catch(()=>{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('📋 Result copied!');});}
 }
