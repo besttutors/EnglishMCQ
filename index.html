@@ -1737,8 +1737,17 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function renderLB(id, hlId=null){
   const lb=getLBLocal(),el=document.getElementById(id);
   if(!el)return;
-  if(!lb.length){el.innerHTML='<div class="lb-empty">Pehle khelo — leaderboard empty hai! 🚀</div>';return;}
-  const med=['🥇','🥈','🥉'];
+  if(!lb.length){
+  el.innerHTML = `
+    <div class="lb-empty">
+      🏆 No champions yet! <br>
+      Be the first player to enter the leaderboard 🚀
+    </div>
+  `;
+  return;
+}
+
+const med = ['🥇','🥈','🥉'];
   el.innerHTML=lb.slice(0,5).map((e,i)=>`
     <div class="lb-row ${e._id===hlId?'highlight':''}" role="listitem">
       <span class="lb-rank r${i+1}">${med[i]||i+1}</span>
